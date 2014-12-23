@@ -11,7 +11,7 @@ ENV ANDROID_SDK_URL http://dl.google.com/android/$ANDROID_SDK_FILE
 # Install 32bit support for Android SDK
 RUN dpkg --add-architecture i386
 RUN apt-get update
-RUN apt-get -y install libc6:i386 libncurses5:i386 libstdc++6:i386
+RUN apt-get -y install libc6:i386 libncurses5:i386 libstdc++6:i386 zlib1g:i386 lib32z1 lib32ncurses5 lib32bz2-1.0 g++-multilib
 
 # Install Android SDK
 RUN cd /usr/local && \
