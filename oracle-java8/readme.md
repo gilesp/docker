@@ -9,7 +9,9 @@ This container, based on phusion/baseimage, installs the Oracle Java 8 SDK and c
 
 Then create an shell alias as follows
 
-    alias jdk8='docker run -i gilesp/oracle-java8'
+    alias jdk8='docker run --rm -i gilesp/oracle-java8'
+
+The --rm is important as it tells docker to clean up the instances when the command finishes. Without that you'll end up with a stale instace (visible with docker ps -a) each time you run a command.
 
 ## Usage
 
