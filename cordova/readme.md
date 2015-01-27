@@ -20,14 +20,10 @@ From docker 1.2, you should be able to create the alias as follows:
 
 Which doesn't require privilige escalation. xxx/yyy are the usb ids of the device you want to deploy/test on. Find these with lsusb
 
-The --rm is important as it tells docker to clean up the instances when the command finishes. Without that you'll end up with a stale instace (visible with docker ps -a) each time you run a command.
+The --rm is important as it tells docker to clean up the instances when the command finishes. Without that you'll end up with a stale instance (visible with docker ps -a) each time you run a command.
 
 ## Usage
 
 You can then use the cordova tools by prefixing them with your alias:
 
     cdv cordova create hello com.example.hello HelloWorld
-
-If you're going to running a lot of commands, it'd be work invoking a shell and then interacting with cordova there, rather than create many throw-away containers:
-
-    cdv /bin/bash
