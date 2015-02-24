@@ -24,9 +24,16 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3FA7E0328081BFF6A14
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN mkdir -p /home/giles && \
+    echo "giles:x:1000:1000:Giles,,,:/home/giles:/bin/bash" >> /etc/passwd && \
+    echo "giles:x:1000:" >> /etc/group && \
+    echo "giles ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/giles && \
+    chmod 0440 /etc/sudoers.d/giles && \
+    chown giles:giles -R /home/giles
+
 # Set workdir
 # You'll need to run this image with a volume mapped to /app (i.e. -v $(pwd):/app) or override this value
-WORKDIR /app
+WORKDIR /home/giles/projects
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
