@@ -6,6 +6,7 @@ docker run \
     -v /home/giles/projects:/home/giles/projects \
     -v /home/giles/.config/MonoDevelop:/home/giles/.config/MonoDevelop \
     -v /home/giles/.config/MonoDevelop-5.0:/home/giles/.config/MonoDevelop-5.0 \
+    -v /home/giles/.config/NuGet:/home/giles/.config/NuGet \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY=$DISPLAY \
     --name monodevelop \
