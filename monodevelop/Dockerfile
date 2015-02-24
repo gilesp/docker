@@ -24,5 +24,9 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3FA7E0328081BFF6A14
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Set workdir
+# You'll need to run this image with a volume mapped to /app (i.e. -v $(pwd):/app) or override this value
+WORKDIR /app
+
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
