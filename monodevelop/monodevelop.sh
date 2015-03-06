@@ -9,6 +9,7 @@ docker run \
     -v /home/giles/.config/NuGet:/home/giles/.config/NuGet \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY=$DISPLAY \
+    -p 9999:8080 \
     --name monodevelop \
     gilesp/monodevelop \
     /sbin/my_init \

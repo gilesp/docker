@@ -1,5 +1,5 @@
 # Docker image for the Monodevelop IDE
-FROM phusion/baseimage:0.9.15
+FROM phusion/baseimage:0.9.16
 
 MAINTAINER Giles Paterson <giles@vurt.uk>
 
@@ -19,7 +19,8 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3FA7E0328081BFF6A14
             monodevelop \
             monodevelop-database \
             monodevelop-nunit \
-            monodevelop-versioncontrol
+            monodevelop-versioncontrol \
+            mono-xsp4
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -34,6 +35,9 @@ RUN mkdir -p /home/giles && \
 # Set workdir
 # You'll need to run this image with a volume mapped to /app (i.e. -v $(pwd):/app) or override this value
 WORKDIR /home/giles/projects
+
+# Expose xsp4 server port
+EXPOSE 8080
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
