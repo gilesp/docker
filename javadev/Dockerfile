@@ -5,6 +5,8 @@ MAINTAINER Giles Paterson <giles@vurt.uk>
 
 # Have a variable for the tarball to ease maintenance.
 ENV IDEA_TARBALL ideaIC-14.0.3.tar.gz
+ENV FIREFOX_TARBALL firefox-28.0.tar.bz2
+ENV FIREFOX_URL http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/28.0/linux-x86_64/en-GB/${FIREFOX_TARBALL}
 
 # Install Git & Maven3
 RUN add-apt-repository ppa:andrei-pozolotin/maven3 && \
@@ -19,6 +21,15 @@ ADD http://download.jetbrains.com/idea/${IDEA_TARBALL} /usr/local/
 RUN tar -xf ${IDEA_TARBALL} && \
     rm -rf *.tar.gz && \
     mv idea* idea
+
+# Install specific firefox version (for Selenium tests)
+# This is only required when selenium lags behind firefox versions
+# Ordinarily you could just do an apt-get install firefox
+ADD ${FIREFOX_URL} /usr/local/
+RUN tar -jxf ${FIREFOX_TARBALL} && \
+    rm -rf *.tar.bz2
+# Install firefox dependencies
+RUN apt-get -y install $(apt-cache depends firefox | grep Depends | sed "s/.*ends:\ //" | tr '\n' ' ')
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -43,7 +54,7 @@ WORKDIR /home/giles/workspace
 EXPOSE 8080
 
 # Add intellij binaries to path
-ENV PATH $PATH:/usr/local/idea/bin
+ENV PATH $PATH:/usr/local/idea/bin:/usr/local/firefox
 
 # Set up Intellij IDEA to add custom config and system path properties.
 RUN sed -i 's/# idea.config.path=/idea.config.path=/g' /usr/local/idea/bin/idea.properties
