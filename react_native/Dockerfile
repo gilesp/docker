@@ -17,6 +17,9 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     npm cache clear
 
+# Default react-native web server port
+EXPOSE 8081
+
 # Set workdir
 # You'll need to run this image with a volume mapped to /app (i.e. -v $(pwd):/app) or override this value
 WORKDIR /app
