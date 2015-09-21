@@ -12,8 +12,8 @@ ENV PATH $PATH:node_modules/.bin
 ##
 ## Install Java
 ##
-RUN apt-get update && \
-    apt-get -y install default-jdk
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -q && \
+	apt-get install -qy --no-install-recommends sudo default-jdk
 
 ##
 ## Install Android SDK
@@ -23,27 +23,23 @@ ENV ANDROID_SDK_FILE android-sdk_r24.0.1-linux.tgz
 ENV ANDROID_SDK_URL http://dl.google.com/android/$ANDROID_SDK_FILE
 
 # Install 32bit support for Android SDK
-RUN dpkg --add-architecture i386
-RUN apt-get update
-RUN apt-get -y install libstdc++6:i386 libgcc1:i386 zlib1g:i386 libncurses5:i386
+RUN dpkg --add-architecture i386 && \
+    apt-get update -q && \
+    apt-get install -qy --no-install-recommends libstdc++6:i386 libgcc1:i386 zlib1g:i386 libncurses5:i386
 
 # Install Android SDK
+ENV ANDROID_HOME /usr/local/android-sdk-linux
 RUN cd /usr/local && \
     wget $ANDROID_SDK_URL && \
     tar -xzf $ANDROID_SDK_FILE && \
-    export ANDROID_HOME=/usr/local/android-sdk-linux && \
     export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools && \
-    chgrp -R users /usr/local/android-sdk-linux && \
-    chmod -R 0775 /usr/local/android-sdk-linux && \
+    chgrp -R users $ANDROID_HOME && \
+    chmod -R 0775 $ANDROID_HOME && \
     rm $ANDROID_SDK_FILE
 
-# Setup environment variables for Android SDK
-#RUN echo -e "export ANDROID_HOME=/usr/local/android-sdk-linux \nexport PATH=\$PATH:/usr/local/android-sdk-linux/tools:/usr/local/android-sdk-linux/platform-tools" >> /etc/profile.d/android.sh
-
 # Install android tools and system-image.
-ENV ANDROID_HOME /usr/local/android-sdk-linux
-ENV PATH $PATH:$ANDROID_HOME/tools
-ENV PATH $PATH:$ANDROID_HOME/platform-tools
+
+ENV PATH $PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 RUN echo "y" | android update sdk --no-ui --force --all --filter platform-tools,android-23,build-tools-23.0.1,extra-android-support-23.0.1,extra-android-m2repository
 
 ##
@@ -59,10 +55,19 @@ RUN apt-get clean && \
 # Default react-native web server port
 EXPOSE 8081
 
+ENV USERNAME dev
+
+RUN adduser --disabled-password --gecos '' $USERNAME && \
+    echo $USERNAME:$USERNAME | chpasswd && \
+    echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    sudo adduser $USERNAME sudo
+
+USER $USERNAME
+
 # Set workdir
-# You'll need to run this image with a volume mapped to /app (i.e. -v $(pwd):/app) or override this value
-WORKDIR /app
+# You'll need to run this image with a volume mapped to /home/dev (i.e. -v $(pwd):/home/dev) or override this value
+WORKDIR /home/$USERNAME/app
 
 # Tell gradle to store dependencies in a sub directory of the android project
 # this persists the dependencies between builds
-ENV GRADLE_USER_HOME /app/android/gradle_deps
+ENV GRADLE_USER_HOME /home/$USERNAME/app/android/gradle_deps
