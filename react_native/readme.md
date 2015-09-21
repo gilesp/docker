@@ -40,11 +40,13 @@ Simply runs react-native start but handles port forwarding
     
 ### react_bash.sh
 
-Gives you a command prompt on the container. This is handy for day to day development work. I currently use this to run the app on my phone, connected via usb as follows:
+This is the main script that I use. It gives you a command prompt on the container and is handy for day to day development work. I currently use this to run the app on my phone, connected via usb as follows:
 
-    $ react-bash.sh
+    $ react_bash.sh
     root@container $ react-native start > /dev/null 2>&1 &
     root@container $ adb reverse tcp:8081 tcp:8081
     root@container $ react-native run-android
 
 You can then edit your code as normal and see it instantly updated on the device.
+
+This script maps the /tmp/.X11-unix directory which should contain your X Windows socket, thus allowing you to run graphical applications (such as the android GUI tools) from within the container.
