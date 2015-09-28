@@ -50,3 +50,11 @@ This is the main script that I use. It gives you a command prompt on the contain
 You can then edit your code as normal and see it instantly updated on the device.
 
 This script maps the /tmp/.X11-unix directory which should contain your X Windows socket, thus allowing you to run graphical applications (such as the android GUI tools) from within the container.
+
+### A Note about Android And Docker
+
+Android, by default, signs your app using a keystore that is held in ~/.android. The adb tool also files stored in ~/.android. These files get auto generated if they don't exist but when running in a Docker container, they'll get wiped out each time you restart the container.
+
+This means that if you create and deploy an app, restart the container then try and deploy it again, it'll fail because the app signatured don't match. You could uninstall the app then reinstall it, but it's a pain to do that every time. Instead, just map a local directory or volume to /home/dev/.android in the container.
+
+The react-bash script will map your local ~/.android to /home/dev/.android in the container. Feel free to change this to something else or use a data only container.
