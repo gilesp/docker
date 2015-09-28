@@ -6,6 +6,8 @@ FROM node:4.0.0
 
 MAINTAINER Giles Paterson <giles@vurt.uk>
 
+LABEL version="1.0.0"
+
 # Setup environment variables
 ENV PATH $PATH:node_modules/.bin
 
@@ -40,7 +42,12 @@ RUN cd /usr/local && \
 # Install android tools and system-image.
 
 ENV PATH $PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
-RUN echo "y" | android update sdk --no-ui --force --all --filter platform-tools,android-23,build-tools-23.0.1,extra-android-support-23.0.1,extra-android-m2repository
+RUN echo "y" | android update sdk \
+    --no-ui \
+    --force \
+    --all \
+    --filter platform-tools,android-23,build-tools-23.0.1,extra-android-support,extra-android-m2repository,sys-img-x86_64-android-23
+
 
 ##
 ## Install react native
@@ -62,6 +69,14 @@ RUN adduser --disabled-password --gecos '' $USERNAME && \
     echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
     sudo adduser $USERNAME sudo
 
+# Create android avd image
+RUN echo "no" | android create avd -n android-23-phone -c 1000M -s WVGA854 -t 1
+
+# Add Tini
+ENV TINI_VERSION v0.6.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+
 USER $USERNAME
 
 # Set workdir
@@ -71,3 +86,9 @@ WORKDIR /home/$USERNAME/app
 # Tell gradle to store dependencies in a sub directory of the android project
 # this persists the dependencies between builds
 ENV GRADLE_USER_HOME /home/$USERNAME/app/android/gradle_deps
+
+ENTRYPOINT ["/tini", "--"]
+
+# Run your program under Tini
+# CMD ["/your/program", "-and", "-its", "arguments"]
+# or docker run your-image /your/program ...
