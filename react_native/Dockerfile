@@ -46,7 +46,7 @@ RUN echo "y" | android update sdk \
     --no-ui \
     --force \
     --all \
-    --filter platform-tools,android-23,build-tools-23.0.1,extra-android-support,extra-android-m2repository,sys-img-x86_64-android-23
+    --filter platform-tools,android-23,build-tools-23.0.1,extra-android-support,extra-android-m2repository,sys-img-x86_64-android-23,extra-google-m2repository
 
 
 ##
