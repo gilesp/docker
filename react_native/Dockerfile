@@ -2,11 +2,11 @@
 
 # Docker image for react native experimentation
 
-FROM node:4.0.0
+FROM node:4.1.1
 
 MAINTAINER Giles Paterson <giles@vurt.uk>
 
-LABEL version="1.0.0"
+LABEL version="1.0.2"
 
 # Setup environment variables
 ENV PATH $PATH:node_modules/.bin
@@ -29,6 +29,9 @@ RUN dpkg --add-architecture i386 && \
     apt-get update -q && \
     apt-get install -qy --no-install-recommends libstdc++6:i386 libgcc1:i386 zlib1g:i386 libncurses5:i386
 
+# Install kvm support for Android emulator
+#RUN apt-get install -qy --no-install-recommends qemu-kvm libvirt-bin libegl1-mesa
+
 # Install Android SDK
 ENV ANDROID_HOME /usr/local/android-sdk-linux
 RUN cd /usr/local && \
@@ -41,7 +44,7 @@ RUN cd /usr/local && \
 
 # Install android tools and system-image.
 
-ENV PATH $PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools
+ENV PATH $PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/23.0.1
 RUN echo "y" | android update sdk \
     --no-ui \
     --force \
@@ -52,7 +55,7 @@ RUN echo "y" | android update sdk \
 ##
 ## Install react native
 ##
-RUN npm install -g react-native-cli
+RUN npm install -g react-native-cli@0.1.7
 
 # Clean up when done.
 RUN apt-get clean && \
@@ -67,10 +70,12 @@ ENV USERNAME dev
 RUN adduser --disabled-password --gecos '' $USERNAME && \
     echo $USERNAME:$USERNAME | chpasswd && \
     echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
-    sudo adduser $USERNAME sudo
+    adduser $USERNAME sudo
+    #adduser $USERNAME kvm && \
+    #adduser $USERNAME libvirt
 
 # Create android avd image
-RUN echo "no" | android create avd -n android-23-phone -c 1000M -s WVGA854 -t 1
+# RUN echo "no" | android create avd -n android-23-phone -c 1000M -s WVGA854 -t 1
 
 # Add Tini
 ENV TINI_VERSION v0.6.0
