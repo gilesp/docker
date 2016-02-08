@@ -1,0 +1,20 @@
+#!/bin/bash
+# script to launch eclipse docker image
+
+ECLIPSE_PLUGINS_DIR=.eclipse-docker
+WORKDIR=`pwd`
+
+if [ ! -d "$WORKDIR/$ECLIPSE_PLUGINS_DIR" ]; then
+    mkdir $WORKDIR/$ECLIPSE_PLUGINS_DIR
+fi
+
+echo "Starting eclipse with workspace $WORKDIR"
+docker run \
+       --rm \
+       -it \
+       -e DISPLAY=$DISPLAY \
+       -v /tmp/.X11-unix:/tmp/.X11-unix \
+       -v $WORKDIR/$ECLIPSE_PLUGINS_DIR:/home/dev/.eclipse \
+       -v $WORKDIR:/home/dev/workspace \
+       gilesp/eclipse
+
