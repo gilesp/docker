@@ -1,5 +1,5 @@
 # Docker image for the Oracle Java 8 SDK
-FROM phusion/baseimage:0.9.16
+FROM phusion/baseimage:0.9.18
 
 MAINTAINER Giles Paterson <giles@vurt.uk>
 
@@ -12,17 +12,14 @@ ENV HOME /root
 RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
 
 # Install Oracle Java
-RUN apt-get -y install software-properties-common && \
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qy --no-install-recommends install software-properties-common && \
     add-apt-repository ppa:webupd8team/java && \
     apt-get update && \
     echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections && \
-    add-apt-repository -y ppa:webupd8team/java && \
-    apt-get update && \
-    apt-get install -y oracle-java8-installer && \
-    apt-get install -y oracle-java8-set-default
+    apt-get -qy --no-install-recommends install oracle-java8-installer oracle-java8-unlimited-jce-policy oracle-java8-set-default 
 
 # Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN DEBIAN_FRONTEND=noninteractive apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
