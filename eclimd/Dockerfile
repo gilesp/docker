@@ -2,7 +2,7 @@
 
 # Docker image for eclim, configured for emacs use
 
-FROM ubuntu:15.10
+FROM ubuntu:16.04
 
 MAINTAINER Giles Paterson <giles@vurt.uk>
 
@@ -21,11 +21,12 @@ RUN adduser --disabled-password --gecos '' ${USERNAME} && \
 
 # Install Java 8 and other dependencies
 RUN apt-get update && \
-    apt-get install -y openjdk-8-jdk ant maven xvfb build-essential wget
+    apt-get install -y openjdk-8-jdk ant maven build-essential wget \
+            xvfb xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic
 
 # Install eclipse
-ENV ECLIPSE_URL http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/M1/
-ENV ECLIPSE_VERSION eclipse-jee-mars-M1-linux-gtk-x86_64
+ENV ECLIPSE_URL http://mirror.netcologne.de/eclipse//technology/epp/downloads/release/neon/R/
+ENV ECLIPSE_VERSION eclipse-jee-neon-R-linux-gtk-x86_64
 RUN cd /usr/local && \
     wget -O ${ECLIPSE_VERSION}.tar.gz ${ECLIPSE_URL}${ECLIPSE_VERSION}.tar.gz && \
     tar xzf ${ECLIPSE_VERSION}.tar.gz
