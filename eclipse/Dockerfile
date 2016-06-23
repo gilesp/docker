@@ -25,7 +25,7 @@ ENV ECLIPSE_TARBALL eclipse-jee-mars-1-linux-gtk-x86_64.tar.gz
 ENV ECLIPSE_DOWNLOAD_URL https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/1/${ECLIPSE_TARBALL}&r=1
 
 # Install Eclipse
-# Download and install Intellij IDEA to have a local installation.
+# Download and install Eclipse to have a local installation.
 WORKDIR /opt
 ADD ${ECLIPSE_DOWNLOAD_URL} /opt/${ECLIPSE_TARBALL}
 RUN tar -xf ${ECLIPSE_TARBALL} && \
