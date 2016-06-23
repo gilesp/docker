@@ -13,5 +13,5 @@ docker run \
        -v $WORKDIR/$ECLIPSE_PLUGINS_DIR:/home/dev/.eclipse \
        -v $WORKDIR:/home/dev/workspace \
        -p 9091:9091 \
-       eclim \
+       gilesp/eclim \
        /usr/bin/xvfb-run /usr/local/eclipse/eclimd  "$@"

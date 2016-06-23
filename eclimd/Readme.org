@@ -1,0 +1,27 @@
+* Docker container for Eclim
+The purpose of this container, is to provide a containerised eclim
+environment.
+
+My use case for this, is so I can more easily use emacs-eclim for
+doing Java development within emacs.
+
+This container is based on ~ubuntu:16.04~ and installes ~Eclipse Neon~ and
+~eclim 2.5.0~.
+
+** Build the image
+#+BEGIN_SRC sh
+docker build -t gilesp/eclim .
+#+END_SRC
+
+** Running the container
+A [[./run-eclimd.sh][shell script]] is provided to simplify running ~eclimd~. 
+
+The script maps the current work directory to be the workspace that
+eclimd/eclipse uses. This means that you can have separate eclipse and
+eclim configurations for each project.
+
+#+BEGIN_SRC sh
+cd /path/to/project
+run-eclimd.sh
+#+END_SRC
+
