@@ -12,7 +12,7 @@ LABEL version="1.0.0"
 ## Create dev user
 ## This avoids permissions issues when running locally
 ##
-ENV USERNAME dev
+ENV USERNAME giles
 
 RUN adduser --disabled-password --gecos '' ${USERNAME} && \
     echo ${USERNAME}:${USERNAME} | chpasswd && \
@@ -53,7 +53,7 @@ RUN java -Dvim.skip=true -Declipse.home=/usr/local/eclipse -jar /usr/local/eclim
 # Set workdir
 # We'll tell eclimd that our eclipse workspace is in this location. You can map this to a volume
 # (i.e. -v $(pwd):/home/dev/workspace) on the host OS when running this container.
-WORKDIR /home/$USERNAME/workspace
+WORKDIR /home/$USERNAME/projects
 
 # Add swift to the PATH 
 ENV PATH /usr/local/usr/bin:$PATH

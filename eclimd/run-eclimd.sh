@@ -10,8 +10,9 @@ WORKDIR=`pwd`
 docker run \
        --rm \
        -it \
-       -v $WORKDIR/$ECLIPSE_PLUGINS_DIR:/home/dev/.eclipse \
-       -v $WORKDIR:/home/dev/workspace \
+       -v $WORKDIR/$ECLIPSE_PLUGINS_DIR:/home/giles/.eclipse \
+       -v $WORKDIR:/home/giles/projects \
        -p 9091:9091 \
+       --name "eclimd" \
        gilesp/eclim \
        /usr/bin/xvfb-run /usr/local/eclipse/eclimd  "$@"
