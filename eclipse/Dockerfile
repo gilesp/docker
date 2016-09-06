@@ -1,5 +1,5 @@
 # Docker image for Eclipse IDE
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 MAINTAINER Giles Paterson <giles@vurt.uk>
 
@@ -56,5 +56,4 @@ ENV HOME /home/$USERNAME
 # You'll need to run this image with a volume mapped to /app (i.e. -v $(pwd):/app) or override this value
 WORKDIR /home/$USERNAME/workspace
 
-# Use baseimage-docker's init system.
 CMD ["/opt/eclipse/eclipse"]
