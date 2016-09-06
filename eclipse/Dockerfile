@@ -36,7 +36,7 @@ ADD eclipse.ini /opt/eclipse/eclipse.ini
 RUN /opt/eclipse/eclipse \
     -nosplash \
     -application org.eclipse.equinox.p2.director \
-    -repository http://download.eclipse.org/releases/mars,http://download.eclipse.org/eclipse/updates/4.5,http://download.eclipse.org/webtools/repository/mars,http://eclipse-color-theme.github.com/update \
+    -repository http://download.eclipse.org/releases/mars,http://download.eclipse.org/eclipse/updates/4.5,http://download.eclipse.org/webtools/repository/mars,http://eclipse-color-theme.github.com/update,https://dl.google.com/eclipse/plugin/4.5 \
     -destination /opt/eclipse \
     -installIU com.github.eclipsecolortheme
     
