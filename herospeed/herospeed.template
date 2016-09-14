@@ -1,0 +1,34 @@
+#!/bin/bash
+
+############################################################
+# Copyright (c) 2015 Jonathan Yantis
+# Released under the MIT license
+############################################################
+
+# Set our wineprefix to point to one just for skype.
+export WINEPREFIX=/home/docker/wine/herospeed
+export WINEARCH='win32'
+
+# Check if the user has skype installed and if they do not then set it up
+if [ ! -f /home/docker/wine/herospeed/drive_c/Program\ Files/HeroSpeed\ CMS/CMS.exe ]
+then
+    # Skype needs corefonts and liberation fonts to work
+     winetricks liberation corefonts
+
+    # Optionally install all the fonts
+    # winetricks allfonts
+
+    # Enable subpixel font smoothing for RGB (not sure a noticable difference)
+    # winetricks fontsmooth=rgb
+
+    # Skype needs richedit controls or you can't type messages or split windows.
+    # winetricks msftedit
+
+    # Launch the setup
+    wine /opt/herospeed/CMS6.1.2.5.exe
+fi
+
+wine /home/docker/wine/herospeed/drive_c/Program\ Files/HeroSpeed\ CMS/CMS.exe
+
+exit
+0Looking
