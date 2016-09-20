@@ -1,0 +1,33 @@
+Build image with ~docker build -t gilesp/build_emacs ./~
+
+Download [[http://ftp.heanet.ie/mirrors/gnu/emacs/emacs-25.1.tar.gz][emacs source code]] and extract to local directory
+
+cd into directory and run the docker container:
+
+#+BEGIN_SRC sh
+docker run \
+  --privileged --pid=host
+  --rm \
+  -it \
+  -v <src_dir>:/tmp/emacs \
+  gilesp/build_emacs \
+  /bin/bash
+#+END_SRC
+
+Then in the shell that starts up, run the following commands:
+
+#+BEGIN_SRC sh
+cd /tmp/emacs
+echo 0 > /proc/sys/kernel/randomize_va_space
+./configure --with-modules --with-cairo --with-xwidgets --with-xaw3d
+make
+#+END_SRC
+
+Once the build has finished, run ~checkinstall --install=no
+--fstrans=no --pkgversion=25.1.0~ to build a debian package.
+
+Once that has completed, you can exist the shell, which shuts down the
+docker container.
+
+On your hose machine, you can ~sudo dpkg -i /path/to/emacs.deb~ to
+install emacs.
