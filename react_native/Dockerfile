@@ -45,7 +45,7 @@ RUN cd /usr/local && \
 # Install android tools and system-image.
 
 ENV PATH $PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/23.0.1
-RUN echo "y" | android update sdk \
+RUN (while sleep 3; do echo "y"; done) | android update sdk \
     --no-ui \
     --force \
     --all \
