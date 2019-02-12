@@ -1,0 +1,119 @@
+#!/bin/bash
+#
+# Script to run a desktop app contained in a docker instance
+#
+# Specifies user id to avoid permissions issues.
+#
+# Maps home directory, to enable persistence.
+#
+# Can enable gpu usage
+#
+# Can enable kvm usage
+#
+# Can enable sound usage
+#
+
+#
+# Usage:
+#   docker-gui "image-name"
+#
+PROGNAME=$(basename $0)
+HOMES_BASE="$HOME/docker-homes"
+
+usage() {
+    cat <<EOF
+Usage: $PROGNAME [-g] [-s] [-k] docker-image
+
+-g enables hardware gpu support in container
+-s enables sound support in container
+-k enables kvm support in container
+EOF
+    exit 0
+}
+
+group_id() {
+    echo $(getent group $1 | cut -d: -f3)
+}
+
+ensure_docker_homes_exists() {
+    if [ ! -d "$HOMES_BASE" ]; then
+        echo "Creating docker homes directory: $HOMES_BASE"
+        mkdir $HOMES_BASE/
+    fi
+
+    if [ ! -d "$HOMES_BASE/$1" ]; then
+        echo "Creating container home directory: $HOMES_BASE/$1"
+        mkdir $HOMES_BASE/$1
+    fi
+}
+
+user_id() {
+    echo `id -u $USER`
+}
+
+gpu_parameters() {
+    echo "--group-add $(group_id video) --device '/dev/dri':'/dev/dri':rw --volume '/dev/dri':'/dev/dri':rw "
+}
+
+kvm_parameters() {
+    echo "--group-add $(group_id kvm) --group-add $(group_id libvirt)  --device '/dev/kvm':'/dev/kvm':rw --volume '/dev/kvm':'/dev/kvm':rw "
+}
+
+sound_parameters() {
+    echo "--group-add $(group_id audio) --device '/dev/snd':'/dev/snd':rw --volume '/dev/snd':'/dev/snd':rw "
+}
+
+safe_imagename() {
+    echo $1 | tr / - | cut -d: -f1
+}
+
+docker_command="docker run --tty --rm --detach --user $(user_id) --userns host --cap-drop ALL --security-opt no-new-privileges --ipc host  --volume '/tmp/.X11-unix':'/tmp/.X11-unix':rw --env 'DISPLAY=$DISPLAY' "
+
+while getopts "gks" option; do
+    case $option in
+        g) docker_command+=$(gpu_parameters) ;;
+        k) docker_command+=$(kvm_parameters) ;;
+        s) docker_command+=$(sound_parameters) ;;
+        [?]) usage;
+    esac
+done
+shift $(expr $OPTIND - 1)
+
+if [ "$#" -ne 1 ]; then
+    usage
+fi
+
+IMAGENAME=$(safe_imagename $1)
+
+ensure_docker_homes_exists $IMAGENAME
+
+docker_command+="--name $IMAGENAME --volume '$HOMES_BASE/$IMAGENAME':'/root':rw "
+eval $docker_command $1
+# docker run --tty --rm --detach \
+#   --name gilesp-androidstudio \
+#   --user 1000:1000 \
+#   --userns host \
+#   --group-add 44 \
+#   --group-add 29 \
+#   --group-add 136 \
+#   --group-add 137 \
+#   --cap-drop ALL \
+#   --security-opt no-new-privileges \
+#   --security-opt label=type:container_runtime_t \
+#   --tmpfs /run --tmpfs /run/lock \
+#   --volume '/home/giles/.local/share/x11docker/gilesp-androidstudio':'/home/dev':rw \
+#   --device '/dev/dri':'/dev/dri':rw \
+#   --volume '/dev/dri':'/dev/dri':rw \
+#   --device '/dev/vga_arbiter':'/dev/vga_arbiter':rw \
+#   --volume '/dev/vga_arbiter':'/dev/vga_arbiter':rw \
+#   --device '/dev/kvm':'/dev/kvm':rw \
+#   --volume '/dev/kvm':'/dev/kvm':rw \
+#   --volume '/tmp/.X11-unix':'/tmp/.X11-unix':rw \
+#   --ipc host \
+#   --workdir '/tmp' \
+#   --env 'container=docker' \
+#   --env 'DISPLAY=:0' \
+#   -- gilesp/androidstudio
+
+# eval $docker-command
+
