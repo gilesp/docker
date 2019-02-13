@@ -1,22 +1,20 @@
 #!/bin/bash
 #
-# Script to run a desktop app contained in a docker instance
+# Script to run a desktop app contained in a docker instance, with as
+# few host privileges as possible.
 #
-# Specifies user id to avoid permissions issues.
+# It ensures that the application in the docker container will be run
+# as your host user, to avoid permissions issues with shared volumes.
+# By default it creates a directory on your host, mounted as a volume,
+# to act as the home directory for the docker user.
 #
-# Maps home directory, to enable persistence.
+# This directory is ~/docker-homes/<image-name>
 #
-# Can enable gpu usage
-#
-# Can enable kvm usage
-#
-# Can enable sound usage
-#
+# You can optionally enable passthrough of the host GPU, sound and
+# virtualisation interfaces to improve performance of appliactions in
+# the container. Obviously, these introduce security risks, so use
+# with caution.
 
-#
-# Usage:
-#   docker-gui "image-name"
-#
 PROGNAME=$(basename $0)
 HOMES_BASE="$HOME/docker-homes"
 
@@ -67,7 +65,7 @@ safe_imagename() {
     echo $1 | tr / - | cut -d: -f1
 }
 
-docker_command="docker run --tty --rm --user $(user_id):$(user_id) --userns host --cap-drop ALL --security-opt no-new-privileges --ipc host  --volume '/tmp/.X11-unix':'/tmp/.X11-unix':rw --env 'DISPLAY=$DISPLAY' "
+docker_command="docker run --tty --detach --rm --user $(user_id):$(user_id) --userns host --cap-drop ALL --security-opt no-new-privileges --ipc host  --volume '/tmp/.X11-unix':'/tmp/.X11-unix':rw --env 'DISPLAY=$DISPLAY' "
 
 while getopts "gks" option; do
     case $option in
