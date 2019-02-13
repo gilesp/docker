@@ -67,7 +67,7 @@ safe_imagename() {
     echo $1 | tr / - | cut -d: -f1
 }
 
-docker_command="docker run --tty --rm --detach --user $(user_id) --userns host --cap-drop ALL --security-opt no-new-privileges --ipc host  --volume '/tmp/.X11-unix':'/tmp/.X11-unix':rw --env 'DISPLAY=$DISPLAY' "
+docker_command="docker run --tty --rm --user $(user_id):$(user_id) --userns host --cap-drop ALL --security-opt no-new-privileges --ipc host  --volume '/tmp/.X11-unix':'/tmp/.X11-unix':rw --env 'DISPLAY=$DISPLAY' "
 
 while getopts "gks" option; do
     case $option in
@@ -87,33 +87,5 @@ IMAGENAME=$(safe_imagename $1)
 
 ensure_docker_homes_exists $IMAGENAME
 
-docker_command+="--name $IMAGENAME --volume '$HOMES_BASE/$IMAGENAME':'/root':rw "
+docker_command+="--name $IMAGENAME --volume '$HOMES_BASE/$IMAGENAME':'/home/dev':rw "
 eval $docker_command $1
-# docker run --tty --rm --detach \
-#   --name gilesp-androidstudio \
-#   --user 1000:1000 \
-#   --userns host \
-#   --group-add 44 \
-#   --group-add 29 \
-#   --group-add 136 \
-#   --group-add 137 \
-#   --cap-drop ALL \
-#   --security-opt no-new-privileges \
-#   --security-opt label=type:container_runtime_t \
-#   --tmpfs /run --tmpfs /run/lock \
-#   --volume '/home/giles/.local/share/x11docker/gilesp-androidstudio':'/home/dev':rw \
-#   --device '/dev/dri':'/dev/dri':rw \
-#   --volume '/dev/dri':'/dev/dri':rw \
-#   --device '/dev/vga_arbiter':'/dev/vga_arbiter':rw \
-#   --volume '/dev/vga_arbiter':'/dev/vga_arbiter':rw \
-#   --device '/dev/kvm':'/dev/kvm':rw \
-#   --volume '/dev/kvm':'/dev/kvm':rw \
-#   --volume '/tmp/.X11-unix':'/tmp/.X11-unix':rw \
-#   --ipc host \
-#   --workdir '/tmp' \
-#   --env 'container=docker' \
-#   --env 'DISPLAY=:0' \
-#   -- gilesp/androidstudio
-
-# eval $docker-command
-
