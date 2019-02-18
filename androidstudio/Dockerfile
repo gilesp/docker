@@ -4,14 +4,15 @@ FROM ubuntu:18.04
 # Set maintainer information
 MAINTAINER Giles Paterson <giles@vurt.uk>
 
-LABEL name="gilesp/androidstudio" version=0.0.1
+LABEL name="gilesp/androidstudio"
+LABEL androidstudio.version=3.3.1
 
 # Create dev user
 RUN useradd -ms /bin/bash dev
 
 # Install dependencies
 RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive
+    && DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
     libpulse0 \
     qemu-kvm \
