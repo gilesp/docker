@@ -5,7 +5,7 @@ FROM ubuntu:18.04
 MAINTAINER Giles Paterson <giles@vurt.uk>
 
 LABEL name="gilesp/androidstudio"
-LABEL androidstudio.version=3.3.1
+LABEL version=3.3.1
 
 # Create dev user
 RUN useradd -ms /bin/bash dev
