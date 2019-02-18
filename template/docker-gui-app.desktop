@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=APPLICATION NAME
+Comment=Dockerised APPLICATION_NAME
+Exec=/home/giles/bin/docker-gui -gsk gilesp/IMAGENAME
+Icon=/home/giles/projects/personal/docker/imagename/application_icon.svg
+Terminal=false
+Categories=Development;IDE;
