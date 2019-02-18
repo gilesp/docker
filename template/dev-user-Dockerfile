@@ -1,0 +1,20 @@
+## -*- docker-image-name: "gilesp/IMAGENAMEGOESHERE" -*-
+FROM ubuntu:18.04
+
+# Set maintainer information
+MAINTAINER Giles Paterson <giles@vurt.uk>
+
+LABEL name="gilesp/IMAGENAMEGOESHERE" version=0.0.1
+
+# Create dev user
+RUN useradd -ms /bin/bash dev
+
+#####################################
+# Install dependencies and app here #
+#####################################
+
+USER dev:dev
+VOLUME /home/dev
+WORKDIR /home/dev
+
+ENTRYPOINT ["/script/to/run/application.sh"]
