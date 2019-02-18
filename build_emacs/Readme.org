@@ -26,8 +26,8 @@ make
 Once the build has finished, run ~checkinstall --install=no
 --fstrans=no --pkgversion=25.1.0~ to build a debian package.
 
-Once that has completed, you can exist the shell, which shuts down the
+Once that has completed, you can exit the shell, which shuts down the
 docker container.
 
-On your hose machine, you can ~sudo dpkg -i /path/to/emacs.deb~ to
+On your host machine, you can ~sudo dpkg -i /path/to/emacs.deb~ to
 install emacs.
